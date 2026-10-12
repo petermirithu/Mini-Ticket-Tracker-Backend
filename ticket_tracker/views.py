@@ -3,9 +3,11 @@ from rest_framework.exceptions import ValidationError
 
 from .models import Ticket
 from .serializers import TicketSerializer
+from .pagination import TicketPagination
 
 class TicketListCreateView(generics.ListCreateAPIView):
-    serializer_class = TicketSerializer    
+    serializer_class = TicketSerializer
+    pagination_class = TicketPagination
 
     def get_queryset(self):
         queryset = Ticket.objects.all()
