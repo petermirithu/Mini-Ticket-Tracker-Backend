@@ -1,0 +1,62 @@
+# ==========================================
+# Python & Django Byte-Code / Cache
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ==========================================
+# Databases & Local Settings
+# ==========================================
+db.sqlite3
+db.sqlite3-journal
+local_settings.py
+
+# ==========================================
+# Sensitive Configuration & Environment Files
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# Virtual Environments
+# ==========================================
+venv/
+.venv/
+virtual
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ==========================================
+# Django Assets & User Media Uploads
+# ==========================================
+media/
+staticfiles/
+static-cdn/
+
+# ==========================================
+# Logs, Backups & Test Artifacts
+# ==========================================
+*.log
+*.bak
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ==========================================
+# OS & IDE Settings (Optional but Recommended)
+# ==========================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
