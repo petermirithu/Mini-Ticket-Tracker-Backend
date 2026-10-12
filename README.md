@@ -4,33 +4,70 @@ A Django REST Framework API backed by PostgreSQL for creating, listing, updating
 
 ## Requirements
 
+- Git
 - Python 3.12+
-- PostgreSQL 14+
+- PostgreSQL 14+ with the `psql` command available
 
 ## Setup
 
-Open the project directory and create a virtual environment:
+Complete these steps in order.
+
+### 1. Clone the repository
 
 ```bash
+git clone https://github.com/petermirithu/Mini-Ticket-Tracker-Backend.git
 cd Mini-Ticket-Tracker-Backend
-python3.12 -m venv virtual
-source virtual/bin/activate
-pip install -r requirements.txt
 ```
 
-Create a PostgreSQL database:
+### 2. Create and activate a Python environment
+
+On macOS or Linux:
+
+```bash
+python3.12 -m venv virtual
+source virtual/bin/activate
+python -m pip install -r requirements.txt
+```
+
+On Windows PowerShell:
+
+```powershell
+py -3.12 -m venv virtual
+.\virtual\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+If PowerShell blocks activation, allow local scripts for the current user and retry:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+On Windows Command Prompt:
+
+```bat
+py -3.12 -m venv virtual
+virtual\Scripts\activate.bat
+python -m pip install -r requirements.txt
+```
+
+### 3. Create the PostgreSQL database
+
+Ensure PostgreSQL is running and `psql` is available in the terminal, then connect:
 
 ```bash
 psql -U postgres
 ```
 
-Then run the following SQL inside PostgreSQL:
+Run this SQL at the PostgreSQL prompt, then exit with `\q`:
 
 ```sql
 CREATE DATABASE ticket_tracker;
 ```
 
-Create a `.env` file in the project root and provide these settings with values appropriate for the local environment:
+### 4. Create the environment file
+
+Create a `.env` file in the project root with values matching the local PostgreSQL installation:
 
 ```dotenv
 DJANGO_SECRET_KEY="replace-with-a-secret-key"
@@ -44,27 +81,35 @@ POSTGRES_HOST="localhost"
 POSTGRES_PORT="5432"
 ```
 
-## Database migrations
+### 5. Run database migrations
 
-After creating or changing a model, generate a migration for the `ticket_tracker` application:
-
-```bash
-python manage.py makemigrations ticket_tracker
-```
-
-Review the generated file in `ticket_tracker/migrations/`, then apply all pending migrations to PostgreSQL:
+With the virtual environment active:
 
 ```bash
 python manage.py migrate
 ```
 
-Useful migration commands:
+### 6. Start the backend
 
 ```bash
-# Show migrations and whether they have been applied
-python manage.py showmigrations
+python manage.py runserver
+```
 
-# Preview the SQL for a migration, replacing 0001 with its number
+The API is available at `http://127.0.0.1:8000`.
+
+## Working with migrations
+
+After changing a model, generate and apply a migration:
+
+```bash
+python manage.py makemigrations ticket_tracker
+python manage.py migrate
+```
+
+Useful inspection commands:
+
+```bash
+python manage.py showmigrations
 python manage.py sqlmigrate ticket_tracker 0001
 ```
 
@@ -78,13 +123,7 @@ Create an administrator account after applying the migrations:
 python manage.py createsuperuser
 ```
 
-Enter the requested username, email address, and password. Start the server and open `http://127.0.0.1:8000/admin/` to sign in:
-
-```bash
-python manage.py runserver
-```
-
-The `Ticket` model is available in Django Admin because it is registered in `ticket_tracker/admin.py`.
+Enter the requested username, email address, and password, ensure the server is running, then open `http://127.0.0.1:8000/admin/` to sign in. The `Ticket` model is available in Django Admin because it is registered in `ticket_tracker/admin.py`.
 
 ## API
 
@@ -146,4 +185,4 @@ The configured PostgreSQL user must have permission to create the temporary test
 
 ## Decisions & Tradeoffs
 
-Django REST Framework was selected because its generic views and model serializers provide consistent validation, JSON responses, and HTTP error handling with relatively little code. PostgreSQL is used in development and testing so database behaviour remains consistent across environments. Integer primary keys were kept because the application is small and does not require distributed ID generation. Ticket lists are ordered newest first and use page-number pagination capped at 100 records per page to prevent unbounded responses. A separate update serializer restricts PATCH requests to status and priority, trading flexibility for a smaller and safer update surface. The statistics endpoint explicitly includes zero-count statuses so clients always receive a predictable response shape. Authentication, authorization, CORS configuration, and user ownership of tickets were omitted as shortcuts because they are outside the current scope. With more time, the API would add authentication and permissions, title and description update support, OpenAPI documentation, structured logging, containerized deployment, and broader edge-case and PostgreSQL integration testing.
+Django REST Framework was selected because its generic views and model serializers provide consistent validation, JSON responses, and HTTP error handling with relatively little code. PostgreSQL is used in development and testing so database behaviour remains consistent across environments. Integer primary keys were kept because the application is small and does not require distributed ID generation. Ticket lists are ordered newest first and use page-number pagination capped at 100 records per page to prevent unbounded responses. A separate update serializer restricts PATCH requests to status and priority, trading flexibility for a smaller and safer update surface. The statistics endpoint explicitly includes zero-count statuses so clients always receive a predictable response shape. CORS is restricted to the configured frontend origins. Authentication, authorization, and user ownership of tickets were omitted because they are outside the current scope. With more time, the API would add authentication and permissions, title and description update support, OpenAPI documentation, structured logging, containerized deployment, and broader edge-case and PostgreSQL integration testing.
