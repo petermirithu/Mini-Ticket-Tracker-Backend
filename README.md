@@ -36,6 +36,7 @@ Create a `.env` file in the project root and provide these settings with values 
 DJANGO_SECRET_KEY="replace-with-a-secret-key"
 DJANGO_DEBUG="true"
 DJANGO_ALLOWED_HOSTS="127.0.0.1,localhost"
+CORS_ALLOWED_ORIGINS="http://localhost:3000,http://localhost:5173"
 POSTGRES_DB="ticket_tracker"
 POSTGRES_USER="postgres"
 POSTGRES_PASSWORD="replace-with-your-password"
