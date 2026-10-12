@@ -1,7 +1,9 @@
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from django.db.models import Count
 from .models import Ticket
 from .serializers import TicketSerializer, TicketUpdateSerializer
 from .pagination import TicketPagination
@@ -33,3 +35,10 @@ class TicketDetailView(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(TicketSerializer(ticket).data, status=status.HTTP_200_OK)    
+
+class TicketStatsView(APIView):
+    def get(self, request):
+        counts = {choice.value: 0 for choice in Ticket.Status}
+        grouped = Ticket.objects.values("status").annotate(count=Count("id"))
+        counts.update({row["status"]: row["count"] for row in grouped})
+        return Response(counts)
